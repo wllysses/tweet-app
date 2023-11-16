@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { nextAuthOptions } from "./api/auth/[...nextauth]/route";
+import { nextAuthOptions } from "@/lib/nextAuth";
 import { prismaClient } from "@/lib/prisma";
 import { Aside } from "@/components/ui/aside";
 import { Post } from "@/components/ui/post";
