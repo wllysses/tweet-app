@@ -35,7 +35,9 @@ export function FormPost({ session, userId }: FormTweetProps) {
         onChange={(e) => setInput(e.target.value)}
         value={input}
         disabled={!session}
+        maxLength={150}
       />
+      <span className="text-right text-xs">{input.length}/150</span>
       <Button
         className="w-fit"
         disabled={!session || !input}

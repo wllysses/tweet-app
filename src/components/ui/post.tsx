@@ -112,6 +112,7 @@ export function Post({
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             disabled={!session}
+            maxLength={150}
           />
           <Button
             className="w-fit"
