@@ -23,9 +23,15 @@ interface CommentsModalProps {
   comments: Comment[];
   user: User;
   session: Session | null;
+  userName: string;
 }
 
-export function CommentsModal({ comments, user, session }: CommentsModalProps) {
+export function CommentsModal({
+  comments,
+  user,
+  session,
+  userName,
+}: CommentsModalProps) {
   const router = useRouter();
 
   async function handleDeleteComment(commentId: string) {
@@ -75,7 +81,7 @@ export function CommentsModal({ comments, user, session }: CommentsModalProps) {
                       </span>
                     </div>
                   </div>
-                  {session && (
+                  {session && session.user?.name === userName && (
                     <Trash2Icon
                       size={18}
                       className="cursor-pointer hover:text-red-500"

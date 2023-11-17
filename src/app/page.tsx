@@ -55,7 +55,6 @@ export default async function Home() {
                     content={post.content}
                     userAvatar={post.user.image!}
                     userName={post.user.name!}
-                    userEmail={post.user.email!}
                     comments={post.comments!}
                     createdAt={post.created_at}
                     session={session}

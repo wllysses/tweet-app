@@ -25,7 +25,6 @@ interface PostProps {
   content: string;
   userAvatar: string;
   userName: string;
-  userEmail: string;
   comments: Comment[];
   createdAt: Date;
   session: Session | null;
@@ -36,7 +35,6 @@ interface PostProps {
 export function Post({
   content,
   userAvatar,
-  userEmail,
   userName,
   comments,
   createdAt,
@@ -81,7 +79,9 @@ export function Post({
         <div className="flex items-center gap-2">
           <Avatar>
             <AvatarFallback>{userName![0]}</AvatarFallback>
-            {userAvatar && <AvatarImage src={userAvatar} />}
+            {userAvatar && (
+              <AvatarImage src={userAvatar} alt="Profile Avatar" />
+            )}
           </Avatar>
           <div>
             <CardTitle className="text-base">{userName}</CardTitle>
@@ -90,7 +90,7 @@ export function Post({
             </CardDescription>
           </div>
         </div>
-        {session && (
+        {session && session.user?.name === userName && (
           <Trash2Icon
             className="hover:text-red-500 cursor-pointer"
             size={18}
@@ -121,7 +121,12 @@ export function Post({
             Comentar
           </Button>
           <span className="text-muted-foreground text-sm mt-2">
-            <CommentsModal comments={comments} user={user} session={session} />
+            <CommentsModal
+              comments={comments}
+              user={user}
+              session={session}
+              userName={userName}
+            />
           </span>
         </div>
       </div>
