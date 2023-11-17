@@ -17,6 +17,9 @@ export default async function Home() {
         include: {
           user: true,
         },
+        orderBy: {
+          created_at: "desc",
+        },
       },
     },
     orderBy: {
