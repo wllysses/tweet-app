@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Session } from "next-auth";
+import { Trash2Icon } from "lucide-react";
 import { createComment } from "@/actions/comments";
+import { deletePost } from "@/actions/posts";
+import { User } from "@prisma/client";
 import { Comment } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
@@ -17,9 +20,6 @@ import {
 import { Separator } from "./separator";
 import { Textarea } from "./textarea";
 import { CommentsModal } from "./comments-modal";
-import { User } from "@prisma/client";
-import { Trash2Icon } from "lucide-react";
-import { deletePost } from "@/actions/posts";
 
 interface PostProps {
   content: string;
@@ -121,12 +121,7 @@ export function Post({
             Comentar
           </Button>
           <span className="text-muted-foreground text-sm mt-2">
-            <CommentsModal
-              comments={comments}
-              user={user}
-              session={session}
-              userName={userName}
-            />
+            <CommentsModal comments={comments} session={session} />
           </span>
         </div>
       </div>

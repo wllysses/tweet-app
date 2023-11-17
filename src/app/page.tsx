@@ -13,7 +13,11 @@ export default async function Home() {
   const posts = await prismaClient.post.findMany({
     include: {
       user: true,
-      comments: true,
+      comments: {
+        include: {
+          user: true,
+        },
+      },
     },
     orderBy: {
       created_at: "desc",

@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { Session } from "next-auth";
 import { MessageCircleIcon, Trash2Icon } from "lucide-react";
-import { User } from "@prisma/client";
 import { Comment } from "@/types";
 import { deleteComment } from "@/actions/comments";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
@@ -21,17 +20,10 @@ import { Button } from "./button";
 
 interface CommentsModalProps {
   comments: Comment[];
-  user: User;
   session: Session | null;
-  userName: string;
 }
 
-export function CommentsModal({
-  comments,
-  user,
-  session,
-  userName,
-}: CommentsModalProps) {
+export function CommentsModal({ comments, session }: CommentsModalProps) {
   const router = useRouter();
 
   async function handleDeleteComment(commentId: string) {
@@ -68,20 +60,25 @@ export function CommentsModal({
                 <div className="mb-3 w-full flex items-center justify-between border-b pb-2">
                   <div className="flex items-center gap-2">
                     <Avatar>
-                      <AvatarFallback>{user?.name![0]}</AvatarFallback>
-                      {user?.image && (
-                        <AvatarImage src={user?.image} alt="Profile Avatar" />
+                      <AvatarFallback>{comment.user?.name![0]}</AvatarFallback>
+                      {comment.user?.image && (
+                        <AvatarImage
+                          src={comment.user?.image}
+                          alt="Profile Avatar"
+                        />
                       )}
                     </Avatar>
                     <div>
-                      <h4 className="font-semibold text-base">{user?.name}</h4>
+                      <h4 className="font-semibold text-base">
+                        {comment.user?.name}
+                      </h4>
                       <span className="text-xs">
                         publicado em{" "}
                         {comment.created_at?.toLocaleDateString("pt-BR")}
                       </span>
                     </div>
                   </div>
-                  {session && session.user?.name === userName && (
+                  {session && session.user?.name === comment.user?.name && (
                     <Trash2Icon
                       size={18}
                       className="cursor-pointer hover:text-red-500"
