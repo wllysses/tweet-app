@@ -15,8 +15,10 @@ interface FormTweetProps {
 export function FormPost({ session, userId }: FormTweetProps) {
   const router = useRouter();
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean | null>(null);
 
   async function handleCreateTweet() {
+    setIsLoading(true);
     const result = await createPost({ userId, content: input });
 
     if (!result) {
@@ -26,6 +28,7 @@ export function FormPost({ session, userId }: FormTweetProps) {
 
     router.refresh();
     setInput("");
+    setIsLoading(false);
   }
 
   return (
@@ -40,10 +43,14 @@ export function FormPost({ session, userId }: FormTweetProps) {
       <span className="text-right text-xs">{input.length}/150</span>
       <Button
         className="w-fit"
-        disabled={!session || !input}
+        disabled={!session || !input || isLoading == true}
         onClick={handleCreateTweet}
       >
-        Postar
+        {isLoading ? (
+          <span className="h-4 w-4 rounded-full border border-secondary border-t-zinc-400 animate-spin" />
+        ) : (
+          "Postar"
+        )}
       </Button>
     </div>
   );

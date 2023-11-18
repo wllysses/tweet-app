@@ -27,14 +27,15 @@ export function CommentsModal({ comments, session }: CommentsModalProps) {
   const router = useRouter();
 
   async function handleDeleteComment(commentId: string) {
-    const result = await deleteComment(commentId);
+    if (confirm("Deseja deletar o post?")) {
+      const result = await deleteComment(commentId);
 
-    if (!result) {
-      alert("Algo deu errado...");
-      return;
+      if (!result) {
+        alert("Algo deu errado...");
+        return;
+      }
+      router.refresh();
     }
-
-    router.refresh();
   }
 
   return (

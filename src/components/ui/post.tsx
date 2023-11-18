@@ -44,8 +44,10 @@ export function Post({
 }: PostProps) {
   const router = useRouter();
   const [comment, setComment] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean | null>(null);
 
   async function handleCreateComment() {
+    setIsLoading(true);
     const result = await createComment({
       userId: user.id,
       postId,
@@ -59,18 +61,22 @@ export function Post({
 
     router.refresh();
     setComment("");
+    setIsLoading(false);
   }
 
   async function handleDeletePost(postId: string) {
-    const result = await deletePost(postId);
+    if (confirm("Deseja deletar o post?")) {
+      const result = await deletePost(postId);
 
-    if (!result) {
-      alert("Algo deu errado...");
+      if (!result) {
+        alert("Algo deu errado...");
+        return;
+      }
+
+      router.refresh();
+      setComment("");
       return;
     }
-
-    router.refresh();
-    setComment("");
   }
 
   return (
@@ -116,10 +122,14 @@ export function Post({
           />
           <Button
             className="w-fit"
-            disabled={!session || !comment}
+            disabled={!session || !comment || isLoading === true}
             onClick={handleCreateComment}
           >
-            Comentar
+            {isLoading ? (
+              <span className="h-4 w-4 rounded-full border border-secondary border-t-zinc-400 animate-spin" />
+            ) : (
+              "Comentar"
+            )}
           </Button>
           <span className="text-muted-foreground text-sm mt-2">
             <CommentsModal comments={comments} session={session} />
