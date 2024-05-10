@@ -6,7 +6,6 @@ import { Session } from "next-auth";
 import { Trash2Icon } from "lucide-react";
 import { createComment } from "@/actions/comments";
 import { deletePost } from "@/actions/posts";
-import { User } from "@prisma/client";
 import { Comment } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
@@ -17,9 +16,10 @@ import {
   CardHeader,
   CardTitle,
 } from "./card";
+import { CommentsModal } from "./comments-modal";
 import { Separator } from "./separator";
 import { Textarea } from "./textarea";
-import { CommentsModal } from "./comments-modal";
+import { toast } from "./use-toast";
 
 interface PostProps {
   content: string;
@@ -28,7 +28,7 @@ interface PostProps {
   comments: Comment[];
   createdAt: Date;
   session: Session | null;
-  user: User;
+  userId: string;
   postId: string;
 }
 
@@ -39,7 +39,7 @@ export function Post({
   comments,
   createdAt,
   session,
-  user,
+  userId,
   postId,
 }: PostProps) {
   const router = useRouter();
@@ -48,17 +48,25 @@ export function Post({
 
   async function handleCreateComment() {
     setIsLoading(true);
-    const result = await createComment({
-      userId: user.id,
+    const response = await createComment({
+      userId,
       postId,
       content: comment,
     });
 
-    if (!result) {
-      alert("Algo deu errado...");
+    if (!response) {
+      toast({
+        title: "Erro",
+        description: "Algo deu errado...",
+        variant: "destructive",
+      });
       return;
     }
 
+    toast({
+      title: "Sucesso",
+      description: "Comentário criado com sucesso!",
+    });
     router.refresh();
     setComment("");
     setIsLoading(false);
@@ -66,13 +74,21 @@ export function Post({
 
   async function handleDeletePost(postId: string) {
     if (confirm("Deseja deletar o post?")) {
-      const result = await deletePost(postId);
+      const response = await deletePost(postId);
 
-      if (!result) {
-        alert("Algo deu errado...");
+      if (!response) {
+        toast({
+          title: "Erro",
+          description: "Algo deu errado... Tente novamente.",
+          variant: "destructive",
+        });
         return;
       }
 
+      toast({
+        title: "Sucesso",
+        description: "Post deletado com sucesso!",
+      });
       router.refresh();
       setComment("");
       return;
@@ -86,7 +102,7 @@ export function Post({
           <Avatar>
             <AvatarFallback>{userName![0]}</AvatarFallback>
             {userAvatar && (
-              <AvatarImage src={userAvatar} alt="Profile Avatar" />
+              <AvatarImage src={userAvatar} alt="Github Profile Avatar" />
             )}
           </Avatar>
           <div>
@@ -100,7 +116,7 @@ export function Post({
           <Trash2Icon
             className="hover:text-red-500 cursor-pointer"
             size={18}
-            onClick={() => handleDeletePost(postId)}
+            onClick={async () => await handleDeletePost(postId)}
           />
         )}
       </CardHeader>

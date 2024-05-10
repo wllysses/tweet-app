@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn, useSession, signOut } from "next-auth/react";
-import { GithubIcon, LogInIcon } from "lucide-react";
+import { GithubIcon, LogInIcon, LogOutIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
 import { Separator } from "./separator";
@@ -24,17 +24,17 @@ export function Aside() {
       {status === "unauthenticated" && (
         <div className="flex flex-col items-center gap-2">
           <LogInIcon size={30} />
-          <h4 className="font-semibold text-lg">Fazer login</h4>
+          <h4 className="font-semibold text-lg">Acessar</h4>
           <span className="text-xs text-muted-foreground">
             Faça login com o seu Github
           </span>
           <Button
-            className="gap-2 mt-4"
+            className="gap-1 mt-4"
             variant="outline"
             onClick={handleLoginWithGithub}
           >
             <GithubIcon size={18} />
-            Github
+            Login com Github
           </Button>
         </div>
       )}
@@ -55,19 +55,20 @@ export function Aside() {
             </Avatar>
             <div className="text-center">
               <span className="text-muted-foreground text-xs">
-                Olá. Seja bem-vindo(a)!
+                Olá. Bem-vindo(a)!
               </span>
-              <h4 className="font-semibold text-lg">{session.user?.name}</h4>
+              <h4 className="font-bold text-lg">{session.user?.name}</h4>
             </div>
           </div>
 
           <Separator className="my-6" />
 
           <Button
-            className="w-full"
-            variant="outline"
+            className="w-full gap-1"
+            variant="destructive"
             onClick={handleGithubLogout}
           >
+            <LogOutIcon size={18} />
             Sair
           </Button>
         </>

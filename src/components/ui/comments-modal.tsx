@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "./alert-dialog";
 import { Button } from "./button";
+import { toast } from "./use-toast";
 
 interface CommentsModalProps {
   comments: Comment[];
@@ -28,12 +29,21 @@ export function CommentsModal({ comments, session }: CommentsModalProps) {
 
   async function handleDeleteComment(commentId: string) {
     if (confirm("Deseja deletar o post?")) {
-      const result = await deleteComment(commentId);
+      const response = await deleteComment(commentId);
 
-      if (!result) {
-        alert("Algo deu errado...");
+      if (!response) {
+        toast({
+          title: "Erro",
+          description: "Algo deu errado... Tente novamente.",
+          variant: "destructive",
+        });
         return;
       }
+
+      toast({
+        title: "Sucesso",
+        description: "Comentário criado com sucesso!",
+      });
       router.refresh();
     }
   }

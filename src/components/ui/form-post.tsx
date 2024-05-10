@@ -1,11 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Session } from "next-auth";
+import { createPost } from "@/actions/posts";
 import { Button } from "./button";
 import { Textarea } from "./textarea";
-import { createPost } from "@/actions/posts";
-import { useState } from "react";
+import { toast } from "./use-toast";
 
 interface FormTweetProps {
   session: Session | null;
@@ -17,15 +18,23 @@ export function FormPost({ session, userId }: FormTweetProps) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState<boolean | null>(null);
 
-  async function handleCreateTweet() {
+  async function handleCreatePost() {
     setIsLoading(true);
-    const result = await createPost({ userId, content: input });
+    const response = await createPost({ userId, content: input });
 
-    if (!result) {
-      alert("Algo deu errado...");
+    if (!response) {
+      toast({
+        title: "Erro",
+        description: "Algo deu errado... Tente novamente.",
+        variant: "destructive",
+      });
       return;
     }
 
+    toast({
+      title: "Sucesso",
+      description: "Post criado com sucesso!",
+    });
     router.refresh();
     setInput("");
     setIsLoading(false);
@@ -34,6 +43,7 @@ export function FormPost({ session, userId }: FormTweetProps) {
   return (
     <div className="grid w-full gap-2">
       <Textarea
+        className="resize-none"
         placeholder="Escreva o que está pensando..."
         onChange={(e) => setInput(e.target.value)}
         value={input}
@@ -44,10 +54,10 @@ export function FormPost({ session, userId }: FormTweetProps) {
       <Button
         className="w-fit"
         disabled={!session || !input || isLoading == true}
-        onClick={handleCreateTweet}
+        onClick={handleCreatePost}
       >
         {isLoading ? (
-          <span className="h-4 w-4 rounded-full border border-secondary border-t-zinc-400 animate-spin" />
+          <span className="size-4 rounded-full border border-secondary border-t-zinc-400 animate-spin" />
         ) : (
           "Postar"
         )}

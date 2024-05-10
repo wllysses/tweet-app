@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth";
+import { RssIcon } from "lucide-react";
 import { nextAuthOptions } from "@/lib/nextAuth";
 import { prismaClient } from "@/lib/prisma";
 import { Aside } from "@/components/ui/aside";
@@ -27,19 +28,18 @@ export default async function Home() {
     },
   });
 
-  const user = await prismaClient.user.findFirst({
-    where: {
-      email: session?.user?.email,
-    },
-  });
-
   return (
     <>
       <header className="p-4 border-b">
         <div className="container mx-auto flex items-center justify-between">
-          <h1 className="font-bold text-3xl">
-            Dev<span className="text-primary">Tweet</span>
-          </h1>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 bg-primary rounded flex items-center justify-center">
+              <RssIcon color="white" />
+            </div>
+            <h1 className="font-bold text-3xl">
+              tweet.<span className="text-primary">dev</span>
+            </h1>
+          </div>
           <ModeToggle />
         </div>
       </header>
@@ -47,14 +47,14 @@ export default async function Home() {
       <main className="my-8 container mx-auto flex gap-6 max-md:flex-col">
         <Aside />
         <div className="flex-1 flex flex-col gap-4">
-          <FormPost session={session} userId={user?.id!} />
+          <FormPost session={session} userId={session?.user.id!} />
 
           <Separator className="my-4" />
 
           <div className="flex flex-col gap-2">
             <h3 className="font-bold text-lg">Feed</h3>
             <div className="flex flex-col gap-4">
-              {!posts.length && <div>Nenhum post</div>}
+              {!posts.length && <div>Nenhum post encontrado</div>}
               {posts &&
                 posts.map((post) => (
                   <Post
@@ -65,7 +65,7 @@ export default async function Home() {
                     comments={post.comments!}
                     createdAt={post.created_at}
                     session={session}
-                    user={user!}
+                    userId={session?.user.id!}
                     postId={post.id}
                   />
                 ))}
